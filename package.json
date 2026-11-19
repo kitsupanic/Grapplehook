@@ -1,0 +1,41 @@
+{
+  "name": "grapplehook",
+  "private": true,
+  "type": "module",
+  "description": "Download and transcode videos with yt-dlp and ffmpeg.",
+  "license": "MIT",
+  "packageManager": "pnpm@11.24.0",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "format": "prettier . --write",
+    "lint": "eslint . && prettier . --check",
+    "tauri": "tauri",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.12.4",
+    "@tauri-apps/plugin-opener": "^2.7.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tauri-apps/cli": "^2.12.4",
+    "@tsconfig/svelte": "^5.0.9",
+    "eslint": "^10.15.0",
+    "eslint-plugin-svelte": "^3.24.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "prettier-plugin-svelte": "^4.1.1",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}

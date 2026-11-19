@@ -1,0 +1,18 @@
+{
+    "programs": [
+
+    ],
+    "stream_groups": [
+
+    ],
+    "streams": [
+        {
+            "codec_name": "vp9",
+            "codec_type": "video"
+        },
+        {
+            "codec_name": "opus",
+            "codec_type": "audio"
+        }
+    ]
+}

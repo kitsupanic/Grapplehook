@@ -1,0 +1,3 @@
+overrides:
+  # shortcut: forces patched minimatch into typescript-eslint 8.72 (wants ^10), remove once typescript-eslint >= 8.73.0 is installed
+  minimatch@10: ^11.0.1

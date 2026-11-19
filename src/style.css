@@ -1,0 +1,796 @@
+/* Claim Tag: every video you hook gets a tag; you collect the file with its stub.
+   Orange is reserved for the live item. Everything sits on an 8px module. */
+/* Display face: Barlow Condensed (SIL OFL 1.1, see assets/fonts/OFL.txt), bundled because the CSP allows only self-hosted fonts. */
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('./assets/fonts/barlow-condensed-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  src: url('./assets/fonts/barlow-condensed-latin-800-normal.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ground: #121110;
+  --field: #1e1c19;
+  --field-2: #2a2723;
+  --line: #3a352f;
+  --ink: #efe7da;
+  --muted: #a69c8f;
+  --tag: #ff8a3d; /* rope orange */
+  --tag-hover: #ff9d5c;
+  --tag-ink: #16120d;
+  --tag-ink-2: #4a2a12;
+  --tag-ink-hover: #2b2219;
+  --tag-well: rgb(22 18 13 / 0.1);
+  --ok: #6fd18f;
+  --bad: #f0625a;
+  --radius: 6px;
+  --display: 'Barlow Condensed', system-ui, sans-serif;
+  font-size: 14px;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  caret-color: var(--tag);
+}
+::selection {
+  background: var(--tag);
+  color: var(--tag-ink);
+}
+* {
+  scrollbar-color: var(--line) transparent;
+}
+
+h2,
+p {
+  margin: 0;
+}
+
+/* One label size for the whole app; hierarchy comes from weight and ink. */
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.fine {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+.claim-no {
+  font-family: var(--display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: -0.02em;
+}
+
+/* ---- top bar ---------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  padding: 0 24px;
+  background: var(--field);
+  -webkit-app-region: drag;
+}
+.topbar button {
+  -webkit-app-region: no-drag;
+}
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.36rem;
+  letter-spacing: 0.01em;
+}
+.hook-mark {
+  color: var(--tag);
+}
+.wordmark .version {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.tools {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---- controls --------------------------------------------------------- */
+input,
+select,
+button {
+  font: inherit;
+  color: var(--ink);
+  background: var(--field);
+  border: 0;
+  border-radius: var(--radius);
+  height: 40px;
+  padding: 0 16px;
+}
+input::placeholder {
+  color: var(--muted);
+}
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--tag);
+  outline-offset: 2px;
+}
+button {
+  cursor: pointer;
+  font-weight: 600;
+  background: var(--field-2);
+  white-space: nowrap;
+  transition: background-color 120ms ease-out;
+}
+button:hover:not(:disabled) {
+  background: var(--line);
+}
+button.primary {
+  background: var(--tag);
+  color: var(--tag-ink);
+}
+button.primary:hover:not(:disabled) {
+  background: var(--tag-hover);
+}
+button.danger {
+  background: color-mix(in srgb, var(--bad) 18%, var(--field-2));
+  color: var(--bad);
+}
+button:disabled,
+input:disabled,
+select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+input[readonly] {
+  color: var(--muted);
+}
+
+/* Quiet top-bar buttons: Tools status, About, update notice. */
+.pill {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.857rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pill:hover:not(:disabled) {
+  background: var(--field-2);
+}
+.pill:not(.ok, .bad, .update):hover {
+  color: var(--ink);
+}
+.pill.ok {
+  color: var(--ok);
+}
+.pill.bad {
+  color: var(--bad);
+}
+.pill.update {
+  color: var(--tag);
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+a {
+  color: var(--tag);
+  text-underline-offset: 3px;
+}
+
+.error {
+  color: var(--bad);
+  font-size: 0.929rem;
+}
+
+/* ---- layout ----------------------------------------------------------- */
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 24px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.fetch-row {
+  display: flex;
+  gap: 8px;
+}
+.fetch-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---- the tag: orange stock, black print, an eyelet, a perforated stub -- */
+.tag {
+  position: relative;
+  display: flex;
+  background: var(--tag);
+  color: var(--tag-ink);
+  border-radius: 8px 4px 4px 8px;
+}
+.tag::before {
+  /* the eyelet */
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--ground);
+}
+.tag-body {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 24px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tag .label,
+.tag .fine {
+  color: var(--tag-ink-2);
+}
+.tag h2 {
+  font-family: var(--display);
+  font-size: 1.86rem;
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.stub {
+  width: 144px;
+  flex-shrink: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-image: linear-gradient(var(--tag-ink) 50%, transparent 50%);
+  background-size: 2px 8px;
+  background-repeat: repeat-y;
+}
+.stub .claim-no {
+  margin-bottom: auto;
+}
+.setup .stub {
+  justify-content: flex-end;
+}
+.stub button {
+  width: 100%;
+  height: auto;
+  min-height: 40px;
+  padding: 8px;
+  white-space: normal;
+  line-height: 1.25;
+  position: sticky;
+  bottom: 16px;
+  background: var(--tag-ink);
+  color: var(--tag);
+}
+.stub button:hover:not(:disabled) {
+  background: var(--tag-ink-hover);
+}
+.stub button:focus-visible,
+.tag input:focus-visible,
+.tag select:focus-visible,
+.tag button:focus-visible {
+  outline-color: var(--tag-ink);
+}
+
+.info-head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.thumb {
+  width: 160px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px;
+  background: var(--tag-ink);
+  flex-shrink: 0;
+}
+.info-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* Options print on the stock as one segment row, divided by dashed rules.
+   The clip hides the rule at the start of each wrapped row. */
+.options-clip {
+  overflow: hidden;
+  border-top: 2px solid var(--tag-ink);
+  padding-top: 16px;
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 16px;
+  margin-left: -17px;
+}
+.opt {
+  flex: 1 1 150px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 0 16px;
+  border-left: 1px dashed var(--tag-ink);
+}
+.opt.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.options select,
+.options input:not([type='checkbox']),
+.seg-value {
+  height: 32px;
+  margin-left: -8px;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--tag-ink);
+  font-size: 1.07rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.options select:hover,
+.options input:not([type='checkbox']):hover,
+.seg-value:hover:not(:disabled),
+.options input:not([type='checkbox']):focus {
+  background: var(--tag-well);
+}
+/* resting affordances: a fill-in line on Filename, a Change marker on Save to */
+.options input:not([type='checkbox']) {
+  border-bottom: 1px dashed var(--tag-ink);
+  border-radius: 4px 4px 0 0;
+}
+.seg-value {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.seg-value .change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: underline 1px;
+  text-underline-offset: 3px;
+  color: var(--tag-ink-2);
+}
+.options input::placeholder {
+  color: var(--tag-ink-2);
+}
+.options input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--tag-ink);
+}
+
+/* Before any video: an unprinted tag that says what to do. */
+.tag.blank {
+  background: transparent;
+  color: var(--ink);
+  outline: 2px dashed var(--line);
+  outline-offset: -2px;
+}
+.tag.blank::before {
+  background: var(--line);
+}
+.tag.blank .tag-body {
+  justify-content: center;
+  gap: 8px;
+  padding-block: 32px;
+}
+.tag.blank p {
+  color: var(--muted);
+}
+.tag.blank .stub {
+  background-image: linear-gradient(var(--line) 50%, transparent 50%);
+  color: var(--line);
+}
+.tag.blank .stub .label {
+  color: var(--muted);
+}
+
+/* first-run setup reuses the tag */
+.setup-list {
+  list-style: none;
+  margin: 0;
+  padding: 16px 0 0;
+  border-top: 2px solid var(--tag-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.setup-list li {
+  display: grid;
+  grid-template-columns: 9rem 1fr auto;
+  gap: 16px;
+  align-items: baseline;
+}
+.tool-name {
+  font-weight: 700;
+}
+.tool-purpose {
+  color: var(--tag-ink-2);
+}
+.tool-state {
+  font-weight: 700;
+}
+.tool-state.missing {
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--tag-ink);
+  color: var(--tag);
+}
+.tag-chip {
+  margin-left: 8px;
+  padding: 0 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background: var(--tag-well);
+}
+.setup .error {
+  color: var(--tag-ink);
+  font-weight: 600;
+}
+
+/* ---- downloads: dark tags, a routing strip, a numbered stub ---------- */
+.downloads {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+.downloads > h2 {
+  margin-bottom: 8px;
+}
+.dl-tag {
+  display: flex;
+  background: var(--field);
+  border-radius: 6px 4px 4px 6px;
+}
+.dl-body {
+  flex: 1;
+  min-width: 0;
+  padding: 16px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.task-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+.task-title {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-stage {
+  flex-shrink: 0;
+  font-size: 0.857rem;
+  font-weight: 600;
+  color: var(--tag);
+}
+.task-stats {
+  font-size: 0.857rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dl-stub {
+  width: 144px;
+  flex-shrink: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+  background-image: linear-gradient(var(--ground) 50%, transparent 50%);
+  background-size: 2px 8px;
+  background-repeat: repeat-y;
+}
+.dl-stub .claim-no {
+  font-size: 1.86rem;
+}
+.dl-stub button {
+  height: auto;
+  min-height: 32px;
+  white-space: normal;
+  line-height: 1.2;
+  padding: 6px 8px;
+  font-size: 0.857rem;
+}
+.dl-tag.running .claim-no {
+  color: var(--tag);
+}
+.dl-tag.done .task-stage {
+  color: var(--ok);
+}
+/* the signature: a finished tag's stub turns green and becomes Show in folder */
+.dl-tag.done .dl-stub {
+  background-color: var(--ok);
+  background-image: linear-gradient(var(--ground) 50%, transparent 50%);
+  color: var(--tag-ink);
+  border-radius: 0 4px 4px 0;
+}
+.dl-tag.done .dl-stub .claim-no {
+  color: var(--tag-ink);
+}
+.dl-tag.done .stub-btn {
+  background: var(--tag-ink);
+  color: var(--ok);
+}
+.dl-tag.done .stub-btn:hover {
+  background: var(--tag-ink-hover);
+}
+.dl-tag.failed .task-stage,
+.dl-tag.failed .claim-no {
+  color: var(--bad);
+}
+.dl-tag.failed .task-stats {
+  color: var(--bad);
+  white-space: normal;
+}
+.dl-tag.cancelled .task-stage,
+.dl-tag.cancelled .task-title {
+  color: var(--muted);
+}
+
+/* The routing strip: Prepare, Download, Convert, Saved. */
+.route {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+}
+.seg {
+  position: relative;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--field-2);
+  overflow: hidden;
+}
+.seg.full {
+  background: var(--tag);
+}
+.seg .fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--tag);
+  transition: width 200ms ease-out;
+}
+.seg.indeterminate .fill {
+  width: 30% !important;
+  animation: travel 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes travel {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(340%);
+  }
+}
+.dl-tag.done .seg {
+  background: var(--ok);
+}
+.dl-tag.failed .seg.full,
+.dl-tag.failed .seg .fill {
+  background: var(--bad);
+}
+.dl-tag.cancelled .seg.full,
+.dl-tag.cancelled .seg .fill {
+  background: var(--muted);
+}
+/* inside an orange tag (Tool install) the strip prints in ink */
+.tag .seg {
+  background: var(--tag-well);
+}
+.tag .seg .fill {
+  background: var(--tag-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .seg .fill {
+    transition: none;
+  }
+  .seg.indeterminate .fill {
+    animation: none;
+    width: 100% !important;
+    opacity: 0.4;
+  }
+}
+
+/* ---- Tools sheet ------------------------------------------------------ */
+.tools-sheet {
+  position: fixed;
+  inset: 56px 16px auto auto;
+  margin: 0;
+  width: min(440px, calc(100vw - 32px));
+  background: var(--field);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+}
+.tools-sheet:popover-open {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tools-sheet ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 16px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tools-sheet li {
+  display: grid;
+  grid-template-columns: 8rem 1fr auto;
+  gap: 16px;
+  align-items: center;
+  font-size: 0.929rem;
+}
+.tools-sheet .path {
+  font-size: 0.857rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tools-sheet .tag-chip {
+  background: var(--field-2);
+  color: var(--muted);
+}
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--field-2);
+  color: var(--muted);
+}
+.badge.ok {
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 14%, var(--field));
+}
+.badge.bad {
+  color: var(--bad);
+  background: color-mix(in srgb, var(--bad) 14%, var(--field));
+}
+.task-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.task-actions button {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 0.857rem;
+}
+.tools-sheet .fine,
+.tools-sheet p {
+  font-size: 0.857rem;
+  color: var(--muted);
+}
+.tools-sheet .error {
+  color: var(--bad);
+}
+
+/* ---- About ------------------------------------------------------------ */
+dialog.about {
+  width: min(460px, calc(100vw - 32px));
+  background: var(--field);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 0.5);
+}
+dialog.about::backdrop {
+  background: rgb(8 7 6 / 0.7);
+}
+dialog.about h2 {
+  font-family: var(--display);
+  font-size: 1.86rem;
+  margin-bottom: 4px;
+}
+dialog.about h3 {
+  margin: 24px 0 8px;
+}
+dialog.about p {
+  margin: 0 0 8px;
+}
+dialog.about ul {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+dialog.about li {
+  display: grid;
+  grid-template-columns: 5rem 6rem 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+
+/* ---- narrow windows (min width is 560) ------------------------------- */
+@media (max-width: 640px) {
+  .stub,
+  .dl-stub {
+    width: 112px;
+  }
+  .thumb {
+    width: 120px;
+  }
+  .setup-list li {
+    grid-template-columns: 6rem 1fr auto;
+  }
+}

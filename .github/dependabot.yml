@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      npm:
+        patterns: ['*']
+    ignore:
+      # typescript-eslint does not support TS 7 yet (typescript-eslint#10940); remove once it does.
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
+  - package-ecosystem: cargo
+    directory: /src-tauri
+    schedule:
+      interval: monthly
+    groups:
+      cargo:
+        patterns: ['*']

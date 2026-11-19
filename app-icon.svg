@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Grapplehook app icon master: a hook threaded through a swinging claim tag. Art is drawn in a 720 grid, placed on the 824px macOS tile. -->
+  <defs>
+    <clipPath id="tile"><rect width="720" height="720" rx="162"/></clipPath>
+  </defs>
+  <g transform="translate(100 100) scale(1.14444)" clip-path="url(#tile)">
+    <rect width="720" height="720" fill="#121110"/>
+    <g fill="none" stroke="#efe7da" stroke-linecap="round" stroke-linejoin="round">
+      <!-- hook tail: passes behind the tag and comes out on the left -->
+      <path d="M358 360 C330 370 290 398 270 366 C258 344 258 292 264 250" stroke-width="30"/>
+    </g>
+    <path d="M262 208 L280 258 L294 290 L268 272 L249 258 Z" fill="#efe7da" stroke="#efe7da" stroke-width="8" stroke-linejoin="round"/>
+    <g transform="translate(355 355) rotate(-18)">
+      <path d="M-45 -62 H45 L107 20 V293 H-107 V20 Z M36 0 A36 36 0 1 0 -36 0 A36 36 0 1 0 36 0 Z" fill="#ff8a3d" fill-rule="evenodd" stroke="#ff8a3d" stroke-width="12" stroke-linejoin="round"/>
+      <path d="M-98 233 H98" stroke="#16120d" stroke-width="9" stroke-linecap="round" stroke-dasharray="16 18"/>
+    </g>
+    <g fill="none" stroke="#efe7da" stroke-linecap="round" stroke-linejoin="round">
+      <!-- rope, eye, shank and bend in front of the tag -->
+      <path d="M358 -20 V94" stroke-width="26"/>
+      <circle cx="358" cy="133" r="34" stroke-width="28"/>
+      <path d="M354 168 C348 196 336 216 340 234 C346 252 398 268 402 302 C405 330 386 350 358 360" stroke-width="30"/>
+    </g>
+  </g>
+</svg>

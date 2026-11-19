@@ -1,0 +1,56 @@
+name: Bug report
+description: Something in Grapplehook does not work as expected.
+labels: [bug, needs-triage]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: If a video link is involved, include it if it is public.
+      placeholder: |
+        1. Paste ...
+        2. Pick ...
+        3. Click Download
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Grapplehook version
+      description: Shown in the About panel.
+      placeholder: '0.2.1'
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Windows
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      placeholder: macOS 15.2, Windows 11, Ubuntu 24.04, ...
+  - type: textarea
+    id: tools
+    attributes:
+      label: Tools
+      description: From the Tools menu, are your Tools Managed or System, and which versions?
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error message or logs
+      description: Paste any error text shown in the app.
+      render: text

@@ -1,0 +1,56 @@
+[youtube] Extracting URL: https://www.youtube.com/watch?v=jNQXAC9IVRw
+[youtube] jNQXAC9IVRw: Downloading webpage
+[youtube] jNQXAC9IVRw: Downloading visionos player API JSON
+[youtube] jNQXAC9IVRw: Downloading m3u8 information
+[info] jNQXAC9IVRw: Downloading 1 format(s): 395+251
+[download] Destination: aria/Me at the zoo.f395.mp4
+[download] Writing temporary cookies file to "/tmp/tmpkas0okz7.cookies"
+ *** Download Progress Summary as of Mon Nov 16 09:05:19 2026 *** 
+===============================================================================
+[#4c809f 16KiB/218KiB(7%) CN:1 DL:16KiB ETA:11s]
+FILE: ./aria//./Me at the zoo.f395.mp4.part
+-------------------------------------------------------------------------------
+
+[#4c809f 16KiB/218KiB(7%) CN:1 DL:16KiB ETA:11s]
+ *** Download Progress Summary as of Mon Nov 16 09:05:23 2026 *** 
+===============================================================================
+[#4c809f 96KiB/218KiB(43%) CN:1 DL:21KiB ETA:5s]
+FILE: ./aria//./Me at the zoo.f395.mp4.part
+-------------------------------------------------------------------------------
+
+[#4c809f 96KiB/218KiB(43%) CN:1 DL:21KiB ETA:5s]
+ *** Download Progress Summary as of Mon Nov 16 09:05:26 2026 *** 
+===============================================================================
+[#4c809f 176KiB/218KiB(80%) CN:1 DL:22KiB ETA:1s]
+FILE: ./aria//./Me at the zoo.f395.mp4.part
+-------------------------------------------------------------------------------
+
+[#4c809f 176KiB/218KiB(80%) CN:1 DL:22KiB ETA:1s]
+GHPROGRESS 223779 223779 NA 24276.694812285306 NA
+[download] Destination: aria/Me at the zoo.f251.webm
+[download] Writing temporary cookies file to "/tmp/tmpobbpp1tv.cookies"
+ *** Download Progress Summary as of Mon Nov 16 09:05:30 2026 *** 
+===============================================================================
+[#8cf12d 48KiB/246KiB(19%) CN:1 DL:22KiB ETA:8s]
+FILE: ./aria//./Me at the zoo.f251.webm.part
+-------------------------------------------------------------------------------
+
+[#8cf12d 48KiB/246KiB(19%) CN:1 DL:22KiB ETA:8s]
+ *** Download Progress Summary as of Mon Nov 16 09:05:33 2026 *** 
+===============================================================================
+[#8cf12d 144KiB/246KiB(58%) CN:1 DL:26KiB ETA:3s]
+FILE: ./aria//./Me at the zoo.f251.webm.part
+-------------------------------------------------------------------------------
+
+[#8cf12d 144KiB/246KiB(58%) CN:1 DL:26KiB ETA:3s]
+ *** Download Progress Summary as of Mon Nov 16 09:05:36 2026 *** 
+===============================================================================
+[#8cf12d 224KiB/246KiB(90%) CN:1 DL:25KiB]
+FILE: ./aria//./Me at the zoo.f251.webm.part
+-------------------------------------------------------------------------------
+
+[#8cf12d 224KiB/246KiB(90%) CN:1 DL:25KiB]
+GHPROGRESS 252182 252182 NA 27162.08180508613 NA
+[Merger] Merging formats into "aria/Me at the zoo.webm"
+Deleting original file aria/Me at the zoo.f395.mp4 (pass -k to keep)
+Deleting original file aria/Me at the zoo.f251.webm (pass -k to keep)

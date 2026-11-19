@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/kitsupanic/Grapplehook/security/advisories/new
+    about: Please report security problems privately, not in a public issue.
+  - name: Problem with a specific site or video
+    url: https://github.com/yt-dlp/yt-dlp/issues
+    about: If a site stopped working, first try Update yt-dlp in the Tools menu. If it still fails, it is likely a yt-dlp issue.
