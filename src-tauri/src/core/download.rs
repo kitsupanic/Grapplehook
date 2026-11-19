@@ -703,11 +703,11 @@ fn cannot_lock(e: &io::Error) -> bool {
     // macOS answers ENOTSUP for NFS mounted `nolocks` and most macFUSE drives; Rust files that
     // under `Uncategorized`, not `Unsupported`. ENOTSUP and EOPNOTSUPP differ on macOS only.
     #[cfg(unix)]
-    if matches!(
-        e.raw_os_error(),
-        Some(libc::ENOLCK | libc::ENOTSUP | libc::EOPNOTSUPP)
-    ) {
-        return true;
+    if let Some(code) = e.raw_os_error() {
+        // Compared, not matched: where the two are equal a match pattern is unreachable.
+        if code == libc::ENOLCK || code == libc::ENOTSUP || code == libc::EOPNOTSUPP {
+            return true;
+        }
     }
     e.kind() == io::ErrorKind::Unsupported
 }
