@@ -743,9 +743,8 @@ fn update(paths: &ToolPaths, cancel: &CancelHandle) -> Result<YtDlpUpdate, ToolC
 // five-minute limit.
 #[cfg(test)]
 mod tests {
-    use super::{leaves_https, update, CancelHandle, ToolPaths, UPDATE_TOO_SLOW};
+    use super::leaves_https;
     use reqwest::Url;
-    use std::time::Duration;
 
     fn url(s: &str) -> Url {
         Url::parse(s).unwrap()
@@ -767,7 +766,9 @@ mod tests {
     #[cfg(unix)]
     #[test]
     fn an_update_past_its_deadline_is_stopped_and_yt_dlp_still_runs() {
+        use super::{update, CancelHandle, ToolPaths, UPDATE_TOO_SLOW};
         use std::os::unix::fs::PermissionsExt;
+        use std::time::Duration;
         let dir = tempfile::tempdir().unwrap();
         let yt_dlp = dir.path().join("yt-dlp");
         std::fs::write(
