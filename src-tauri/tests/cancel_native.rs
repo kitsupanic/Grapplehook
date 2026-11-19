@@ -12,19 +12,21 @@ use std::time::{Duration, Instant};
 
 use grapplehook_lib::core::{download, DownloadError, DownloadOptions, ToolPaths};
 
-/// target/<profile>/examples/fake_tool, next to this test's target/<profile>/deps.
+/// target/<profile>/examples/fake_tool. The test binary sits in target/<profile>/deps on older
+/// cargo and deeper under target/<profile>/build on newer cargo, so look up from it.
 fn fake_tool() -> PathBuf {
     let exe = std::env::current_exe().unwrap();
-    let path = exe.parent().unwrap().parent().unwrap().join(format!(
-        "examples/fake_tool{}",
-        std::env::consts::EXE_SUFFIX
-    ));
-    assert!(
-        path.is_file(),
-        "{} is missing: run plain `cargo test`, or `cargo build --examples` first",
-        path.display()
-    );
-    path
+    let name = format!("examples/fake_tool{}", std::env::consts::EXE_SUFFIX);
+    exe.ancestors()
+        .skip(1)
+        .map(|dir| dir.join(&name))
+        .find(|path| path.is_file())
+        .unwrap_or_else(|| {
+            panic!(
+                "{name} is missing above {}: run plain `cargo test`, or `cargo build --examples` first",
+                exe.display()
+            )
+        })
 }
 
 fn is_alive(pid: &str) -> bool {
