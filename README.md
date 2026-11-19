@@ -45,6 +45,12 @@ On an Intel Mac, [build from source](#build-from-source).
 
 The builds are **not code-signed**, so macOS and Windows show a warning the first time you open the app. That is expected and only happens once. Open your platform below for the steps. If you would rather not run an unsigned app, [build from source](#build-from-source) instead.
 
+To check that a download is the real one, compare it with `SHA256SUMS` on the release page, or with the [GitHub CLI](https://cli.github.com) confirm that this repo's release workflow built it:
+
+```sh
+gh attestation verify Grapplehook_0.2.3_aarch64.dmg --repo kitsupanic/Grapplehook
+```
+
 <details>
 <summary><b>macOS</b>: "Apple cannot check it for malicious software"</summary>
 
