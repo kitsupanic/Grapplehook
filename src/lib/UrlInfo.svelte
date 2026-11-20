@@ -6,6 +6,7 @@
   import { heldLink } from './heldLink.svelte';
   import { claimNo, formatDuration } from './format';
   import { downloadUrl } from './lookup';
+  import { resolveQuality } from './sentLink';
   import { tools } from './tools.svelte';
 
   let url = $state('');
@@ -36,7 +37,8 @@
     tools.changing ? 'Wait for the Tools to finish changing' : tools.requiredPresent ? undefined : 'Install the Required Tools first',
   );
 
-  async function fetchInfo() {
+  /** `sentQuality` is a sent link's `quality`; Paste and Fetch info reset to `best`. */
+  async function fetchInfo(sentQuality = 'best') {
     if (locked) return;
     tools.lookingUp = true;
     error = '';
@@ -46,7 +48,7 @@
     try {
       info = await getInfo(target);
       fetchedUrl = target;
-      quality = 'best';
+      quality = resolveQuality(sentQuality, info.heights);
       // A name typed for the last video would otherwise be given to this one.
       filename = '';
     } catch (err) {
@@ -57,9 +59,9 @@
   }
 
   /** Put a link in the box and look it up, as Paste and a sent link do. Never starts a download. */
-  function lookUp(link: string) {
+  function lookUp(link: string, sentQuality?: string) {
     url = link;
-    fetchInfo();
+    fetchInfo(sentQuality);
   }
 
   // Paste and fetch in one click: pasting a URL is the whole point of the row.
@@ -74,7 +76,7 @@
 
   $effect(() => {
     const link = heldLink.take(locked);
-    if (link) untrack(() => lookUp(link));
+    if (link) untrack(() => lookUp(link.url, link.quality));
   });
 
   async function browse() {
@@ -129,7 +131,9 @@
   />
   <button disabled={locked} onclick={paste} title="Paste a URL from the clipboard and fetch its info">Paste</button>
   <!-- Orange belongs to the live item: once the tag is out, Fetch info steps back until the URL changes. -->
-  <button class:primary={!info || !target} disabled={locked} title={lockedTitle} onclick={fetchInfo}>{busy ? 'Fetching…' : 'Fetch info'}</button>
+  <button class:primary={!info || !target} disabled={locked} title={lockedTitle} onclick={() => fetchInfo()}
+    >{busy ? 'Fetching…' : 'Fetch info'}</button
+  >
 </section>
 
 {#if error}

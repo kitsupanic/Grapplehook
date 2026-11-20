@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import { parse } from './sentLink';
+import { parse, resolveQuality } from './sentLink';
 
 const video = 'https://www.youtube.com/watch?v=abc&t=10';
 const link = (query: string) => `grapplehook://open?${query}`;
@@ -66,4 +66,21 @@ test('quality is kept when the picker knows it, and best otherwise', () => {
 
 test('fields the app does not know are ignored', () => {
   expect(parse(link(`url=${encodeURIComponent(video)}&from=extension&v=2`))).toEqual({ url: video, quality: 'best' });
+});
+
+test('a sent height becomes the highest available height at or below it', () => {
+  expect(resolveQuality('1080', [2160, 1080, 720])).toBe('1080');
+  expect(resolveQuality('1080', [720, 480])).toBe('720');
+  expect(resolveQuality('1000', [1440, 720, 360])).toBe('720');
+});
+
+test('a sent height with nothing at or below it is best', () => {
+  expect(resolveQuality('360', [1080, 720])).toBe('best');
+  expect(resolveQuality('1080', [])).toBe('best');
+});
+
+test('best, audio and muxed pass through', () => {
+  expect(resolveQuality('best', [1080])).toBe('best');
+  expect(resolveQuality('audio', [1080])).toBe('audio');
+  expect(resolveQuality('muxed', [])).toBe('muxed');
 });

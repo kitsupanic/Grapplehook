@@ -12,16 +12,16 @@ const sent = (url: string) => `grapplehook://open?url=${encodeURIComponent(url)}
 
 test('the link that started the app is held until the box unlocks', () => {
   expect(heldLink.take(true)).toBeNull();
-  expect(heldLink.take(false)).toBe('https://cold.example/v');
+  expect(heldLink.take(false)).toEqual({ url: 'https://cold.example/v', quality: 'best' });
 });
 
 test('a link waits while the box is locked, and only the newest one is kept', () => {
   send([sent('https://a.example/v')]);
-  send([sent('https://b.example/v')]);
+  send([sent('https://b.example/v') + '&quality=720']);
   // A rejected link changes nothing: b stays held.
   send(['grapplehook://open?url=javascript%3Aalert(1)', 'garbage']);
   expect(heldLink.take(true)).toBeNull();
-  expect(heldLink.take(false)).toBe('https://b.example/v');
+  expect(heldLink.take(false)).toEqual({ url: 'https://b.example/v', quality: '720' });
   // Handed out once.
   expect(heldLink.take(false)).toBeNull();
 });
