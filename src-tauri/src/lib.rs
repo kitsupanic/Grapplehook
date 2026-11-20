@@ -21,6 +21,16 @@ pub fn run() {
         .setup(|app| {
             let handle = app.handle().clone();
             app.deep_link().on_open_url(move |_| show_window(&handle));
+            // An AppImage has no installer, so register the scheme for this user on every start (ADR 0003).
+            // The plugin points the handler at $APPIMAGE, so the copy run last wins.
+            // Only when run as an AppImage, so a dev build doesn't take the links over.
+            // A failure (no xdg-mime) only means links won't open the app; it must not stop it.
+            #[cfg(target_os = "linux")]
+            if app.env().appimage.is_some() {
+                if let Err(err) = app.deep_link().register_all() {
+                    eprintln!("could not register grapplehook:// links: {err}");
+                }
+            }
             Ok(())
         })
         .plugin(tauri_plugin_dialog::init())

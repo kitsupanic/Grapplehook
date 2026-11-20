@@ -1,12 +1,12 @@
 import { getCurrent, onOpenUrl } from '@tauri-apps/plugin-deep-link';
-import { parse } from './sentLink';
+import { parse, type SentLink } from './sentLink';
 
 // The newest sent link (ADR 0003) not looked up yet. It waits here while the URL box is locked:
 // a link that started the app comes before the Tools check. Read once per launch, at import.
-let held = $state<string | null>(null);
+let held = $state<SentLink | null>(null);
 
 const receive = (links: string[] | null) => {
-  for (const link of links ?? []) held = parse(link)?.url ?? held;
+  for (const link of links ?? []) held = parse(link) ?? held;
 };
 getCurrent().then(receive, () => {});
 onOpenUrl(receive).catch(() => {});

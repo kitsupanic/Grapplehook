@@ -33,3 +33,14 @@ export function parse(raw: string): SentLink | null {
   const quality = link.searchParams.get('quality') ?? '';
   return { url: url.href, quality: /^(audio|muxed|[1-9]\d*)$/.test(quality) ? quality : 'best' };
 }
+
+/**
+ * The picker value for a sent `quality`, once the video's heights (highest first) are known:
+ * a height becomes the highest one at or below it, or `best` if every height is above it.
+ * Any other value already names a picker option and passes through.
+ */
+export function resolveQuality(sent: string, heights: number[]): string {
+  if (!/^\d+$/.test(sent)) return sent;
+  const fit = heights.find((h) => h <= Number(sent));
+  return fit === undefined ? 'best' : String(fit);
+}
