@@ -22,6 +22,31 @@ test('a link with any other scheme, path or no url is rejected', () => {
   expect(parse('')).toBeNull();
 });
 
+test('a link to this machine or the local network is rejected', () => {
+  for (const host of [
+    'localhost',
+    'app.localhost',
+    'localhost.',
+    'printer.local',
+    '127.0.0.1',
+    '2130706433',
+    '0.0.0.0',
+    '10.1.2.3',
+    '172.16.0.1',
+    '172.31.255.255',
+    '192.168.1.1',
+    '169.254.1.1',
+    '[::1]',
+    '[fd00::1]',
+  ]) {
+    expect(parse(link(`url=${encodeURIComponent(`http://${host}/reboot`)}`)), host).toBeNull();
+  }
+  // Public neighbours of the private ranges still pass.
+  for (const host of ['172.15.0.1', '172.32.0.1', '11.0.0.1', 'localhost.example.com']) {
+    expect(parse(link(`url=${encodeURIComponent(`http://${host}/v`)}`)), host).not.toBeNull();
+  }
+});
+
 test('quality is kept when the picker knows it, and best otherwise', () => {
   const url = `url=${encodeURIComponent(video)}`;
   expect(parse(link(`${url}&quality=720`))?.quality).toBe('720');

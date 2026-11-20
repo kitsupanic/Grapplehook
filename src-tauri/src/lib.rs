@@ -16,6 +16,7 @@ pub fn run() {
             show_window(app)
         }))
         // The window reads each link itself (src/lib/sentLink.ts); here it only comes to the front.
+        // So a link the window then rejects still raises it: accepted, as Rust doesn't parse links.
         .plugin(tauri_plugin_deep_link::init())
         .setup(|app| {
             let handle = app.handle().clone();

@@ -1,22 +1,9 @@
-<script module lang="ts">
-  import { getCurrent, onOpenUrl } from '@tauri-apps/plugin-deep-link';
-  import { parse } from './sentLink';
-
-  // The latest sent link (ADR 0003) not looked up yet. It waits here while the box is locked:
-  // a link that started the app comes before the Tools check. Read once per launch, not per mount.
-  let sent = $state<string | null>(null);
-  const receive = (links: string[] | null) => {
-    for (const link of links ?? []) sent = parse(link)?.url ?? sent;
-  };
-  getCurrent().then(receive, () => {});
-  onOpenUrl(receive).catch(() => {});
-</script>
-
 <script lang="ts">
   import { untrack } from 'svelte';
   import { downloadDir } from '@tauri-apps/api/path';
   import { chooseDir, getInfo, readClipboard, startDownload, type VideoInfo } from './api';
   import { downloads } from './downloads.svelte';
+  import { heldLink } from './heldLink.svelte';
   import { claimNo, formatDuration } from './format';
   import { downloadUrl } from './lookup';
   import { tools } from './tools.svelte';
@@ -86,10 +73,8 @@
   }
 
   $effect(() => {
-    if (!sent || locked) return;
-    const link = sent;
-    sent = null;
-    untrack(() => lookUp(link));
+    const link = heldLink.take(locked);
+    if (link) untrack(() => lookUp(link));
   });
 
   async function browse() {
