@@ -1,4 +1,19 @@
+<script module lang="ts">
+  import { getCurrent, onOpenUrl } from '@tauri-apps/plugin-deep-link';
+  import { parse } from './sentLink';
+
+  // The latest sent link (ADR 0003) not looked up yet. It waits here while the box is locked:
+  // a link that started the app comes before the Tools check. Read once per launch, not per mount.
+  let sent = $state<string | null>(null);
+  const receive = (links: string[] | null) => {
+    for (const link of links ?? []) sent = parse(link)?.url ?? sent;
+  };
+  getCurrent().then(receive, () => {});
+  onOpenUrl(receive).catch(() => {});
+</script>
+
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { downloadDir } from '@tauri-apps/api/path';
   import { chooseDir, getInfo, readClipboard, startDownload, type VideoInfo } from './api';
   import { downloads } from './downloads.svelte';
@@ -54,17 +69,28 @@
     }
   }
 
+  /** Put a link in the box and look it up, as Paste and a sent link do. Never starts a download. */
+  function lookUp(link: string) {
+    url = link;
+    fetchInfo();
+  }
+
   // Paste and fetch in one click: pasting a URL is the whole point of the row.
   async function paste() {
     if (locked) return;
     try {
-      url = (await readClipboard()).trim();
+      lookUp((await readClipboard()).trim());
     } catch (err) {
       error = String(err);
-      return;
     }
-    fetchInfo();
   }
+
+  $effect(() => {
+    if (!sent || locked) return;
+    const link = sent;
+    sent = null;
+    untrack(() => lookUp(link));
+  });
 
   async function browse() {
     try {

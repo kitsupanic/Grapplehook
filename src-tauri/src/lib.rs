@@ -2,6 +2,7 @@ mod commands;
 pub mod core;
 
 use tauri::Manager;
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_dialog::{DialogExt, MessageDialogButtons, MessageDialogKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -10,12 +11,17 @@ pub fn run() {
         // One app at a time: `Running` only guards the Tools within one process, so a second
         // copy could delete or replace them mid-download. A second launch shows the open window.
         // Registered first, as the plugin asks.
+        // Its `deep-link` feature hands a link from the second launch to the deep-link plugin.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            if let Some(window) = app.get_webview_window("main") {
-                let _ = window.unminimize();
-                let _ = window.set_focus();
-            }
+            show_window(app)
         }))
+        // The window reads each link itself (src/lib/sentLink.ts); here it only comes to the front.
+        .plugin(tauri_plugin_deep_link::init())
+        .setup(|app| {
+            let handle = app.handle().clone();
+            app.deep_link().on_open_url(move |_| show_window(&handle));
+            Ok(())
+        })
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(core::Running::default())
@@ -52,6 +58,13 @@ pub fn run() {
                 app.state::<core::Running>().cancel_all_and_wait();
             }
         });
+}
+
+fn show_window(app: &tauri::AppHandle) {
+    if let Some(window) = app.get_webview_window("main") {
+        let _ = window.unminimize();
+        let _ = window.set_focus();
+    }
 }
 
 /// Off the main thread, which a blocking dialog would freeze. Closes the window on "Quit".

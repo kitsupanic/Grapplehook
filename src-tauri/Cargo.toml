@@ -26,7 +26,8 @@ zip = { version = "9.6.0", default-features = false, features = ["deflate"] }
 tar = { version = "0.4.46", default-features = false }
 liblzma = { version = "0.4.9", default-features = false, features = ["static"] }
 arboard = { version = "3", default-features = false }
-tauri-plugin-single-instance = "2"
+tauri-plugin-single-instance = { version = "2", features = ["deep-link"] }
+tauri-plugin-deep-link = "2"
 
 [dev-dependencies]
 tempfile = "3"
