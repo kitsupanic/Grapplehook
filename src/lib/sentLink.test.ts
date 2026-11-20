@@ -38,11 +38,19 @@ test('a link to this machine or the local network is rejected', () => {
     '169.254.1.1',
     '[::1]',
     '[fd00::1]',
+    'router',
+    'fritz.box',
+    'nas.lan',
+    'pi.home.arpa',
+    'svc.internal',
+    '100.64.0.1',
+    '100.127.255.255',
+    '0.1.2.3',
   ]) {
     expect(parse(link(`url=${encodeURIComponent(`http://${host}/reboot`)}`)), host).toBeNull();
   }
   // Public neighbours of the private ranges still pass.
-  for (const host of ['172.15.0.1', '172.32.0.1', '11.0.0.1', 'localhost.example.com']) {
+  for (const host of ['172.15.0.1', '172.32.0.1', '11.0.0.1', '100.63.0.1', '100.128.0.1', 'localhost.example.com', 'lan.example.com']) {
     expect(parse(link(`url=${encodeURIComponent(`http://${host}/v`)}`)), host).not.toBeNull();
   }
 });

@@ -1,9 +1,10 @@
 // This machine and the local network: a page must not make yt-dlp send requests to the user's router or printer.
-// The URL parser has already turned forms like `2130706433` into dotted IPv4. Every IPv6 literal is
-// refused, as video links never use one.
+// A name without a dot (`http://router/`) and home-network suffixes (fritz.box, nas.lan) resolve inside it.
+// The URL parser has already turned forms like `2130706433` into dotted IPv4. 100.64.0.0/10 is
+// carrier-grade NAT and Tailscale. Every IPv6 literal is refused, as video links never use one.
 // shortcut: a public name that resolves to a local address still passes; checking would need DNS in core.
 const LOCAL_HOST =
-  /^(localhost|.+\.localhost|.+\.local|0\.0\.0\.0|127\.[\d.]+|10\.[\d.]+|192\.168\.[\d.]+|169\.254\.[\d.]+|172\.(1[6-9]|2\d|3[01])\.[\d.]+|\[.*\])$/;
+  /^([^.]+|.+\.(localhost|local|lan|home\.arpa|internal|box)|0\.[\d.]+|127\.[\d.]+|10\.[\d.]+|192\.168\.[\d.]+|169\.254\.[\d.]+|172\.(1[6-9]|2\d|3[01])\.[\d.]+|100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\.[\d.]+|\[.*\])$/;
 
 /** What a sent `grapplehook://open?url=…&quality=…` link asks the app to look up (ADR 0003). */
 export interface SentLink {
