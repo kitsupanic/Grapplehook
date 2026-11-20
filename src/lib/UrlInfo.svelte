@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { downloadDir } from '@tauri-apps/api/path';
   import { chooseDir, getInfo, readClipboard, startDownload, type VideoInfo } from './api';
   import { downloads } from './downloads.svelte';
+  import { heldLink } from './heldLink.svelte';
   import { claimNo, formatDuration } from './format';
   import { downloadUrl } from './lookup';
   import { tools } from './tools.svelte';
@@ -54,17 +56,26 @@
     }
   }
 
+  /** Put a link in the box and look it up, as Paste and a sent link do. Never starts a download. */
+  function lookUp(link: string) {
+    url = link;
+    fetchInfo();
+  }
+
   // Paste and fetch in one click: pasting a URL is the whole point of the row.
   async function paste() {
     if (locked) return;
     try {
-      url = (await readClipboard()).trim();
+      lookUp((await readClipboard()).trim());
     } catch (err) {
       error = String(err);
-      return;
     }
-    fetchInfo();
   }
+
+  $effect(() => {
+    const link = heldLink.take(locked);
+    if (link) untrack(() => lookUp(link));
+  });
 
   async function browse() {
     try {

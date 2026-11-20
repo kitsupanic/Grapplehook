@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Window permissions. Core commands need no plugin permissions; the opener plugin opens http(s) links in the browser.",
+  "description": "Window permissions. Core commands need no plugin permissions; the opener plugin opens http(s) links in the browser; deep-link hands the window grapplehook:// links.",
   "windows": ["main"],
-  "permissions": ["core:default", "opener:default"]
+  "permissions": ["core:default", "opener:default", "deep-link:default"]
 }

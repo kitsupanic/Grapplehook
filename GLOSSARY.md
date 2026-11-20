@@ -22,3 +22,7 @@ Grapplehook running a Tool to do work: a download or a video lookup. Many Tool R
 
 **Tool Change**
 Installing, updating or deleting Managed Tools. A Tool Change needs the Tools to itself: it is refused while any Tool Run is in flight, and no Tool Run can start while it is in progress.
+
+**Extension**
+The Grapplehook browser extension. It sends the link of a YouTube video, with a chosen quality, to Grapplehook. It never downloads anything itself.
+_Avoid_: plugin, add-on.
