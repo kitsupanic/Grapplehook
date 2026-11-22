@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatBytes } from './format';
+  import { heldLink } from './heldLink.svelte';
   import InstallButton from './InstallButton.svelte';
   import InstallProgress from './InstallProgress.svelte';
   import { TOOL_NAMES, tools } from './tools.svelte';
@@ -16,6 +17,12 @@
 <section class="tag setup" aria-labelledby="setup-title">
   <div class="tag-body">
     <h2 id="setup-title">Grapplehook needs a few Tools first</h2>
+    {#if heldLink.waiting}
+      <!-- A sent link (ADR 0003) waits in heldLink and is looked up once the URL row comes back. -->
+      <p class="fine held-link" role="status">
+        Got a link from your browser: <span class="held-url">{heldLink.waiting}</span>. It opens once the Tools are installed.
+      </p>
+    {/if}
     <ul class="setup-list">
       {#each tools.statuses ?? [] as { tool, required, state } (tool)}
         <li>

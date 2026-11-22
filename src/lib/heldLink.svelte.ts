@@ -12,6 +12,10 @@ getCurrent().then(receive, () => {});
 onOpenUrl(receive).catch(() => {});
 
 export const heldLink = {
+  /** The held link's URL without taking it, so the Tools setup can say a link is waiting. Reactive. */
+  get waiting() {
+    return held?.url ?? null;
+  },
   /** The held link, handed out once and only while the box is unlocked. Reactive: an `$effect` reruns when one arrives. */
   take(locked: boolean) {
     if (locked || !held) return null;
