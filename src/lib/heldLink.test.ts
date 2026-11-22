@@ -12,7 +12,11 @@ const sent = (url: string) => `grapplehook://open?url=${encodeURIComponent(url)}
 
 test('the link that started the app is held until the box unlocks', () => {
   expect(heldLink.take(true)).toBeNull();
+  // Visible while held (the Tools setup shows it), without being taken.
+  expect(heldLink.waiting).toBe('https://cold.example/v');
+  expect(heldLink.waiting).toBe('https://cold.example/v');
   expect(heldLink.take(false)).toEqual({ url: 'https://cold.example/v', quality: 'best' });
+  expect(heldLink.waiting).toBeNull();
 });
 
 test('a link waits while the box is locked, and only the newest one is kept', () => {
