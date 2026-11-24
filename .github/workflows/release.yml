@@ -44,9 +44,32 @@ jobs:
       # No build cache: workflows on main can write any cache entry, so a release would ship
       # whatever another run left there.
       - run: pnpm install --frozen-lockfile
+      # macOS is signed with the Developer ID certificate and notarized with an App Store Connect
+      # API key. Tauri reads the key from a file, so write it to the runner's temp folder.
+      # Fail here rather than ship an unsigned .dmg when a secret is missing.
+      - name: Write the notarization key
+        if: startsWith(matrix.os, 'macos')
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+        run: |
+          if [ -z "$APPLE_CERTIFICATE" ] || [ -z "$APPLE_API_KEY_P8" ]; then
+            echo "::error::APPLE_CERTIFICATE or APPLE_API_KEY_P8 secret is missing"
+            exit 1
+          fi
+          key_path="$RUNNER_TEMP/AuthKey.p8"
+          printf '%s\n' "$APPLE_API_KEY_P8" > "$key_path"
+          chmod 600 "$key_path"
+          echo "APPLE_API_KEY_PATH=$key_path" >> "$GITHUB_ENV"
       - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Only the macOS job gets the Apple secrets; elsewhere these are empty.
+          APPLE_CERTIFICATE: ${{ startsWith(matrix.os, 'macos') && secrets.APPLE_CERTIFICATE || '' }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ startsWith(matrix.os, 'macos') && secrets.APPLE_CERTIFICATE_PASSWORD || '' }}
+          APPLE_SIGNING_IDENTITY: ${{ startsWith(matrix.os, 'macos') && secrets.APPLE_SIGNING_IDENTITY || '' }}
+          APPLE_API_KEY: ${{ startsWith(matrix.os, 'macos') && secrets.APPLE_API_KEY || '' }}
+          APPLE_API_ISSUER: ${{ startsWith(matrix.os, 'macos') && secrets.APPLE_API_ISSUER || '' }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: Grapplehook ${{ github.ref_name }}
@@ -55,7 +78,7 @@ jobs:
           args: ${{ matrix.args }}
 
   # After every installer is on the draft: publish their checksums and sign build provenance,
-  # so people can check an unsigned download came from this workflow.
+  # so people can check a download came from this workflow.
   verify:
     needs: release
     runs-on: ubuntu-latest
