@@ -43,7 +43,7 @@ Get the installer for your platform from the [latest release](https://github.com
 
 On an Intel Mac, [build from source](#build-from-source).
 
-The builds are **not code-signed**, so macOS and Windows show a warning the first time you open the app. That is expected and only happens once. Open your platform below for the steps. If you would rather not run an unsigned app, [build from source](#build-from-source) instead.
+The macOS build is **signed and notarized by Apple**, so it opens like any other app. The Windows build is **not code-signed**, so Windows shows a warning the first time you run the installer. That is expected and only happens once. Open your platform below for the steps. If you would rather not run an unsigned app, [build from source](#build-from-source) instead.
 
 To check that a download is the real one, compare it with `SHA256SUMS` on the release page, or with the [GitHub CLI](https://cli.github.com) confirm that this repo's release workflow built it:
 
@@ -52,23 +52,13 @@ gh attestation verify Grapplehook_0.2.3_aarch64.dmg --repo kitsupanic/Grapplehoo
 ```
 
 <details>
-<summary><b>macOS</b>: "Apple cannot check it for malicious software"</summary>
+<summary><b>macOS</b>: install from the <code>.dmg</code></summary>
 
 <br>
 
-Gatekeeper blocks the first launch with _"Grapplehook" cannot be opened because Apple cannot check it for malicious software_ (or _"the developer cannot be verified"_).
+Open the `.dmg` and drag **Grapplehook** into **Applications**. The first time you open it, macOS asks whether to open an app downloaded from the internet; click **Open**.
 
-1. Open the `.dmg` and drag **Grapplehook** into **Applications**.
-2. Try to open it once. It will be blocked; that is fine.
-3. Go to **System Settings → Privacy & Security**, scroll down, click **Open Anyway** next to the Grapplehook message, and confirm.
-
-On older macOS versions, right-click the app in Applications and choose **Open** (twice, if needed). After this it opens normally.
-
-If macOS says the app _"is damaged and can't be opened"_, that is the quarantine flag macOS puts on unsigned downloads. Clear it with:
-
-```bash
-xattr -cr /Applications/Grapplehook.app
-```
+Releases up to 0.3.0 were not signed. If an older version is blocked with _"Apple cannot check it for malicious software"_, update to the latest release.
 
 </details>
 

@@ -14,4 +14,4 @@ Include what you found, how to reproduce it, and which version and OS you used. 
 
 In scope: Grapplehook itself, including how it downloads, verifies and runs Managed Tools, and how it passes URLs and options to the Tools.
 
-Out of scope: bugs in yt-dlp, ffmpeg, ffprobe or aria2c themselves. Report those to their own projects (links are in the [README](README.md#third-party-tools)). The release builds are not code-signed; that is known and documented.
+Out of scope: bugs in yt-dlp, ffmpeg, ffprobe or aria2c themselves. Report those to their own projects (links are in the [README](README.md#third-party-tools)). The Windows and Linux release builds are not code-signed; that is known and documented. The macOS build is signed with a Developer ID certificate and notarized.
