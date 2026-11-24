@@ -25,7 +25,7 @@ body:
     attributes:
       label: Grapplehook version
       description: Shown in the About panel.
-      placeholder: '0.3.0'
+      placeholder: '0.3.1'
     validations:
       required: true
   - type: dropdown

@@ -1,6 +1,6 @@
 [package]
 name = "grapplehook"
-version = "0.3.0"
+version = "0.3.1"
 description = "Download and transcode videos with yt-dlp and ffmpeg"
 license = "MIT"
 edition = "2021"
