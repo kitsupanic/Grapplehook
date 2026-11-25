@@ -9,6 +9,7 @@
 <p align="center">
   <a href="https://github.com/kitsupanic/Grapplehook/releases/latest"><b>Download</b></a> ·
   <a href="#install">Install help</a> ·
+  <a href="#browser-extension">Browser extension</a> ·
   <a href="#build-from-source">Build from source</a> ·
   <a href="LICENSE">MIT license</a>
 </p>
@@ -110,6 +111,17 @@ certutil -hashfile <file> SHA256   # Windows
 ### Updates
 
 On launch, Grapplehook asks GitHub for the latest release. If a newer one exists, a small notice in the top bar links to it. If you are offline or GitHub rate-limits the request, nothing is shown.
+
+## Browser extension
+
+The [Grapplehook extension](https://github.com/kitsupanic/Grapplehook-Extension) skips the copy and paste. Press its button on a YouTube or YouTube Music video, pick a quality, and Grapplehook opens with that video ready to download. It needs Grapplehook 0.3.0 or later.
+
+<p>
+  <a href="https://addons.mozilla.org/addon/grapplehook/"><img src="docs/readme/extension-firefox.svg" height="64" alt="Add to Firefox (Firefox 121 or later)"></a>
+  <a href="https://chromewebstore.google.com/detail/foxified/cldmemdnllncchfahbcnjijheaolemfk"><img src="docs/readme/extension-chromium.svg" height="64" alt="Get Foxified for Chrome, Edge, Brave and Arc"></a>
+</p>
+
+On **Chrome, Edge, Brave or Arc**, add [Foxified](https://chromewebstore.google.com/detail/foxified/cldmemdnllncchfahbcnjijheaolemfk) first. It's a free extension that runs Firefox add-ons. Then open [Grapplehook on Firefox Add-ons](https://addons.mozilla.org/addon/grapplehook/) and add it through Foxified. Rather not use Foxified? [Load it by hand](https://github.com/kitsupanic/Grapplehook-Extension#load-it-by-hand).
 
 ## Tools
 
