@@ -4,3 +4,5 @@ pnpm-lock.yaml
 .claude/
 graphify-out/
 .impeccable/
+# Written by `impeccable design-compact`; its map layout is not Prettier-stable.
+DESIGN.md
