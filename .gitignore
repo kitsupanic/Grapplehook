@@ -14,6 +14,7 @@ Thumbs.db
 
 # Local agent and design-tool state
 .claude/
-.impeccable/
+.impeccable/*
+!.impeccable/design-full.md
 PRODUCT.md
 graphify-out/
